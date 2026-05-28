@@ -26,15 +26,19 @@ export const test = base.extend<Fixtures>({
   },
 
   adminPage: async ({ page, adminApi }, use) => {
+    const token = adminApi.token;
+    if (!token) throw new Error('Admin auth token is not available');
     await page.goto('/');
-    await page.evaluate((token) => localStorage.setItem('token', token), adminApi.token);
+    await page.evaluate((storageToken: string) => localStorage.setItem('token', storageToken), token);
     await page.goto('/dashboard.html');
     await use(page);
   },
 
   viewerPage: async ({ page, viewerApi }, use) => {
+    const token = viewerApi.token;
+    if (!token) throw new Error('Viewer auth token is not available');
     await page.goto('/');
-    await page.evaluate((token) => localStorage.setItem('token', token), viewerApi.token);
+    await page.evaluate((storageToken: string) => localStorage.setItem('token', storageToken), token);
     await page.goto('/dashboard.html');
     await use(page);
   },

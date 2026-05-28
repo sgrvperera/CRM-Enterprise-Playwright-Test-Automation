@@ -1,7 +1,9 @@
-import { APIRequestContext, APIRequestOptions, APIResponse } from '@playwright/test';
+import { APIRequestContext, APIResponse } from '@playwright/test';
 import { validateSchema } from '../utils/contract';
 import { authResponseSchema, customerSchema, customerListSchema, errorSchema } from './Schemas';
 import { Logger } from '../utils/logger';
+
+type APIRequestOptions = Parameters<APIRequestContext['get']>[1];
 
 export class ApiClient {
   readonly request: APIRequestContext;
