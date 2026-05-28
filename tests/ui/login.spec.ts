@@ -1,5 +1,5 @@
 import { test, expect } from '@playwright/test';
-import { LoginPage } from '../pages/LoginPage';
+import { LoginPage } from '../../src/test-support/pages/LoginPage';
 
 test.describe('Auth flow', () => {
   test('Login and redirect to dashboard', async ({ page }) => {

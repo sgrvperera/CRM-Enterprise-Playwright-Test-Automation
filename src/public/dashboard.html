@@ -1,44 +1,328 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
   <head>
     <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>CRM Dashboard</title>
+
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      crossorigin="anonymous"
+    />
+
     <style>
-      body {
-        font-family: Arial;
-        padding: 24px;
+      :root {
+        --bg-1: #0f172a;
+        --bg-2: #111827;
+        --panel: rgba(255, 255, 255, 0.08);
+        --panel-border: rgba(255, 255, 255, 0.14);
+        --text-main: #e5e7eb;
+        --text-soft: #94a3b8;
+        --primary: #6366f1;
+        --primary-2: #8b5cf6;
+        --danger: #ef4444;
+        --success: #22c55e;
+        --shadow: 0 24px 60px rgba(0, 0, 0, 0.35);
       }
-      .card {
-        display: inline-block;
-        padding: 12px;
-        border: 1px solid #ddd;
-        margin: 8px;
+
+      * {
+        box-sizing: border-box;
+      }
+
+      html,
+      body {
+        min-height: 100%;
+      }
+
+      body {
+        margin: 0;
+        font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont,
+          "Segoe UI", sans-serif;
+        color: var(--text-main);
+        background:
+          radial-gradient(circle at top left, rgba(99, 102, 241, 0.22), transparent 30%),
+          radial-gradient(circle at top right, rgba(139, 92, 246, 0.18), transparent 28%),
+          linear-gradient(135deg, var(--bg-1), var(--bg-2));
+      }
+
+      .page-shell {
+        min-height: 100vh;
+        padding: 32px 18px;
+      }
+
+      .dashboard-wrap {
+        max-width: 1180px;
+        margin: 0 auto;
+      }
+
+      .topbar {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 16px;
+        padding: 24px 26px;
+        border: 1px solid var(--panel-border);
+        background: linear-gradient(180deg, rgba(255, 255, 255, 0.11), rgba(255, 255, 255, 0.06));
+        backdrop-filter: blur(18px);
+        border-radius: 24px;
+        box-shadow: var(--shadow);
+        margin-bottom: 24px;
+      }
+
+      .title-block h1 {
+        font-size: clamp(1.6rem, 2vw, 2.3rem);
+        font-weight: 800;
+        line-height: 1.1;
+        margin: 0;
+        letter-spacing: -0.03em;
+      }
+
+      .title-block p {
+        margin: 8px 0 0;
+        color: var(--text-soft);
+        font-size: 0.95rem;
+      }
+
+      .actions {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        flex-wrap: wrap;
+      }
+
+      .btn-modern {
+        border: 0;
+        border-radius: 14px;
+        padding: 0.8rem 1.1rem;
+        font-weight: 600;
+        transition: transform 0.2s ease, box-shadow 0.2s ease, opacity 0.2s ease;
+        text-decoration: none;
+      }
+
+      .btn-modern:hover {
+        transform: translateY(-1px);
+        box-shadow: 0 10px 24px rgba(0, 0, 0, 0.18);
+      }
+
+      .btn-outline-modern {
+        color: #eef2ff;
+        background: rgba(255, 255, 255, 0.06);
+        border: 1px solid rgba(255, 255, 255, 0.16);
+      }
+
+      .btn-outline-modern:hover {
+        color: #ffffff;
+        background: rgba(255, 255, 255, 0.1);
+      }
+
+      .btn-danger-modern {
+        color: #fff;
+        background: linear-gradient(135deg, #ef4444, #dc2626);
+        box-shadow: 0 12px 26px rgba(239, 68, 68, 0.22);
+      }
+
+      .btn-danger-modern:hover {
+        color: #fff;
+        opacity: 0.96;
+      }
+
+      .cards-grid {
+        display: grid;
+        grid-template-columns: repeat(12, 1fr);
+        gap: 18px;
+      }
+
+      .metric-col {
+        grid-column: span 6;
+      }
+
+      .metric-card {
+        height: 100%;
+        position: relative;
+        overflow: hidden;
+        border-radius: 24px;
+        border: 1px solid var(--panel-border);
+        background: linear-gradient(180deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.05));
+        backdrop-filter: blur(18px);
+        box-shadow: var(--shadow);
+        padding: 22px;
+        min-height: 170px;
+      }
+
+      .metric-card::before {
+        content: "";
+        position: absolute;
+        inset: auto -40px -50px auto;
+        width: 160px;
+        height: 160px;
+        border-radius: 50%;
+        background: radial-gradient(circle, rgba(99, 102, 241, 0.24), transparent 68%);
+        pointer-events: none;
+      }
+
+      .metric-card::after {
+        content: "";
+        position: absolute;
+        inset: 0;
+        border-radius: 24px;
+        border: 1px solid rgba(255, 255, 255, 0.04);
+        pointer-events: none;
+      }
+
+      .metric-label {
+        font-size: 0.92rem;
+        color: var(--text-soft);
+        text-transform: uppercase;
+        letter-spacing: 0.12em;
+        margin-bottom: 14px;
+        font-weight: 700;
+      }
+
+      .metric-value {
+        font-size: clamp(2.4rem, 4vw, 3.6rem);
+        font-weight: 800;
+        line-height: 1;
+        letter-spacing: -0.05em;
+        margin-bottom: 10px;
+      }
+
+      .metric-note {
+        color: #cbd5e1;
+        font-size: 0.95rem;
+        margin: 0;
+      }
+
+      .metric-icon {
+        width: 52px;
+        height: 52px;
+        border-radius: 16px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        margin-bottom: 16px;
+        font-size: 1.4rem;
+        font-weight: 700;
+        background: rgba(255, 255, 255, 0.08);
+        border: 1px solid rgba(255, 255, 255, 0.12);
+      }
+
+      .metric-customers .metric-icon {
+        background: linear-gradient(135deg, rgba(99, 102, 241, 0.28), rgba(99, 102, 241, 0.12));
+      }
+
+      .metric-activity .metric-icon {
+        background: linear-gradient(135deg, rgba(34, 197, 94, 0.24), rgba(34, 197, 94, 0.1));
+      }
+
+      .metric-footer {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+        margin-top: 22px;
+      }
+
+      .pill {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        border-radius: 999px;
+        padding: 0.45rem 0.8rem;
+        font-size: 0.85rem;
+        font-weight: 600;
+        background: rgba(255, 255, 255, 0.07);
+        color: #e2e8f0;
+      }
+
+      .pill-dot {
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        background: var(--success);
+        box-shadow: 0 0 0 6px rgba(34, 197, 94, 0.12);
+      }
+
+      .subtle-line {
+        height: 1px;
+        background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.14), transparent);
+        margin: 18px 0 0;
+      }
+
+      @media (max-width: 768px) {
+        .page-shell {
+          padding: 18px 12px;
+        }
+
+        .topbar {
+          flex-direction: column;
+          align-items: stretch;
+          padding: 20px;
+        }
+
+        .actions {
+          width: 100%;
+        }
+
+        .actions .btn-modern {
+          flex: 1 1 auto;
+          text-align: center;
+        }
+
+        .metric-col {
+          grid-column: span 12;
+        }
       }
     </style>
   </head>
   <body>
-    <div class="container" style="margin-top: 24px">
-      <div class="d-flex justify-content-between align-items-center mb-4">
-        <h1 class="h3 mb-0">Dashboard</h1>
-        <div>
-          <a class="btn btn-outline-secondary me-2" href="/users.html" data-testid="link-users"
-            >Manage Customers</a
-          >
-          <button class="btn btn-danger" data-testid="logout">Logout</button>
-        </div>
-      </div>
+    <div class="page-shell">
+      <div class="dashboard-wrap">
+        <div class="topbar">
+          <div class="title-block">
+            <h1>Dashboard</h1>
+            <p>Overview of customer activity and account access.</p>
+          </div>
 
-      <div class="row g-3" id="cards">
-        <div class="col-md-4">
-          <div class="card p-3 shadow-sm" data-testid="card-customers">
-            <div class="h5">Customers</div>
-            <div class="fs-3" id="count">0</div>
+          <div class="actions">
+            <a class="btn-modern btn-outline-modern me-0" href="/users.html" data-testid="link-users"
+              >Manage Customers</a
+            >
+            <a class="btn-modern btn-outline-modern" href="/audit.html" data-testid="link-audit"
+              >Audit Logs</a
+            >
+            <a class="btn-modern btn-outline-modern" href="/admin.html" data-testid="link-admin"
+              >Admin Settings</a
+            >
+            <button class="btn-modern btn-danger-modern" data-testid="logout">Logout</button>
           </div>
         </div>
-        <div class="col-md-4">
-          <div class="card p-3 shadow-sm" data-testid="card-activity">
-            <div class="h5">Recent activity</div>
-            <div class="fs-3">5</div>
+
+        <div class="cards-grid" id="cards">
+          <div class="metric-col">
+            <div class="metric-card metric-customers" data-testid="card-customers">
+              <div class="metric-icon">👥</div>
+              <div class="metric-label">Customers</div>
+              <div class="metric-value" id="count">0</div>
+              <div class="metric-note">Total registered customers in the system</div>
+              <div class="metric-footer">
+                <span class="pill"><span class="pill-dot"></span> Live data</span>
+              </div>
+              <div class="subtle-line"></div>
+            </div>
+          </div>
+
+          <div class="metric-col">
+            <div class="metric-card metric-activity" data-testid="card-activity">
+              <div class="metric-icon">⚡</div>
+              <div class="metric-label">Recent activity</div>
+              <div class="metric-value">5</div>
+              <div class="metric-note">Latest actions and updates across the dashboard</div>
+              <div class="metric-footer">
+                <span class="pill">Updated recently</span>
+              </div>
+              <div class="subtle-line"></div>
+            </div>
           </div>
         </div>
       </div>
@@ -46,7 +330,6 @@
 
     <script
       src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"
-      integrity=""
       crossorigin="anonymous"
     ></script>
     <script>
@@ -56,9 +339,10 @@
         const res = await fetch('/api/customers', {
           headers: { Authorization: 'Bearer ' + token },
         });
-        if (!res.ok) return (location.href = '/');
-        const list = await res.json();
-        document.getElementById('count').textContent = list.length;
+        if (!res.ok) return (location.href = '/unauthorized.html');
+        const payload = await res.json();
+        const total = payload.meta?.total ?? (payload.data?.length ?? 0);
+        document.getElementById('count').textContent = total;
       }
       document.querySelector('[data-testid="logout"]').addEventListener('click', () => {
         localStorage.removeItem('token');

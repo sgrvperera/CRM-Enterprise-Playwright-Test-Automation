@@ -1,5 +1,5 @@
-import { test, expect } from '../fixtures';
-import { UsersPage } from '../pages/UsersPage';
+import { test, expect } from '../../src/test-support/fixtures';
+import { UsersPage } from '../../src/test-support/pages/UsersPage';
 
 const rows = [
   { name: 'Acme Data 1', email: 'acme1@example.com', status: 'Active' },

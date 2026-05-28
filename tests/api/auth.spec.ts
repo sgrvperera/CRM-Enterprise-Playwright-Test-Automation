@@ -1,17 +1,13 @@
 import { test, expect, request } from '@playwright/test';
+import { ApiClient } from '../../src/test-support/services/ApiClient';
 
 test('API auth returns token and allows /me', async () => {
-  const apiContext = await request.newContext({ baseURL: 'http://localhost:3000' });
-  const res = await apiContext.post('/api/auth/login', {
-    data: { email: 'admin@example.com', password: 'Admin123!' },
-  });
-  expect(res.ok()).toBeTruthy();
-  const body = await res.json();
-  expect(body.token).toBeTruthy();
-  const me = await apiContext.get('/api/me', {
-    headers: { Authorization: 'Bearer ' + body.token },
-  });
-  expect(me.ok()).toBeTruthy();
-  const meJson = await me.json();
+  const api = new ApiClient(await request.newContext({ baseURL: 'http://localhost:3000' }));
+  const authResponse = await api.login('admin@example.com', 'Admin123!');
+  expect(authResponse.token).toBeTruthy();
+
+  const meResponse = await api.get('/api/me');
+  expect(meResponse.ok()).toBeTruthy();
+  const meJson = await meResponse.json();
   expect(meJson.email).toBe('admin@example.com');
 });

@@ -1,5 +1,5 @@
 import { test, expect } from '@playwright/test';
-import { LoginPage } from '../pages/LoginPage';
+import { LoginPage } from '../../src/test-support/pages/LoginPage';
 
 test('Negative login shows error', async ({ page }) => {
   const login = new LoginPage(page);

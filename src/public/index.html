@@ -1,51 +1,365 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width,initial-scale=1" />
     <title>CRM Portal - Login</title>
+
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      crossorigin="anonymous"
+    />
+
     <style>
+      :root {
+        --bg-1: #0f172a;
+        --bg-2: #111827;
+        --panel: rgba(255, 255, 255, 0.08);
+        --panel-border: rgba(255, 255, 255, 0.14);
+        --text-main: #e5e7eb;
+        --text-soft: #94a3b8;
+        --primary: #6366f1;
+        --primary-2: #8b5cf6;
+        --danger: #ef4444;
+        --shadow: 0 24px 60px rgba(0, 0, 0, 0.35);
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      html,
       body {
-        font-family: Arial;
+        min-height: 100%;
+      }
+
+      body {
+        margin: 0;
+        font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont,
+          "Segoe UI", sans-serif;
+        color: var(--text-main);
+        background:
+          radial-gradient(circle at top left, rgba(99, 102, 241, 0.22), transparent 30%),
+          radial-gradient(circle at top right, rgba(139, 92, 246, 0.18), transparent 28%),
+          linear-gradient(135deg, var(--bg-1), var(--bg-2));
+      }
+
+      .page-shell {
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
         padding: 24px;
+      }
+
+      .login-wrap {
+        width: 100%;
+        max-width: 980px;
+        display: grid;
+        grid-template-columns: 1.1fr 0.9fr;
+        gap: 24px;
+        align-items: stretch;
+      }
+
+      .hero-panel,
+      .login-panel {
+        border: 1px solid var(--panel-border);
+        background: linear-gradient(180deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.05));
+        backdrop-filter: blur(18px);
+        border-radius: 28px;
+        box-shadow: var(--shadow);
+        overflow: hidden;
+      }
+
+      .hero-panel {
+        padding: 38px;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        position: relative;
+        min-height: 520px;
+      }
+
+      .hero-panel::before {
+        content: "";
+        position: absolute;
+        inset: auto -60px -60px auto;
+        width: 220px;
+        height: 220px;
+        border-radius: 50%;
+        background: radial-gradient(circle, rgba(99, 102, 241, 0.22), transparent 70%);
+        pointer-events: none;
+      }
+
+      .brand-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+        width: fit-content;
+        padding: 0.55rem 0.9rem;
+        border-radius: 999px;
+        border: 1px solid rgba(255, 255, 255, 0.12);
+        background: rgba(255, 255, 255, 0.06);
+        font-size: 0.9rem;
+        font-weight: 700;
+        letter-spacing: 0.04em;
+      }
+
+      .brand-dot {
+        width: 10px;
+        height: 10px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, var(--primary), var(--primary-2));
+        box-shadow: 0 0 0 6px rgba(99, 102, 241, 0.12);
+      }
+
+      .hero-content {
+        margin-top: 24px;
+      }
+
+      .hero-content h1 {
+        margin: 0;
+        font-size: clamp(2rem, 3vw, 3.3rem);
+        line-height: 1.05;
+        letter-spacing: -0.04em;
+        font-weight: 800;
+      }
+
+      .hero-content p {
+        margin: 18px 0 0;
+        max-width: 520px;
+        color: var(--text-soft);
+        font-size: 1rem;
+        line-height: 1.7;
+      }
+
+      .hero-stats {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 14px;
+        margin-top: 32px;
+      }
+
+      .stat {
+        padding: 18px;
+        border-radius: 20px;
+        border: 1px solid rgba(255, 255, 255, 0.12);
+        background: rgba(255, 255, 255, 0.05);
+      }
+
+      .stat .num {
+        font-size: 1.35rem;
+        font-weight: 800;
+        margin-bottom: 4px;
+      }
+
+      .stat .label {
+        color: var(--text-soft);
+        font-size: 0.9rem;
+      }
+
+      .login-panel {
+        padding: 34px;
+        display: flex;
+        align-items: center;
+      }
+
+      .login-card {
+        width: 100%;
+      }
+
+      .login-title {
+        margin: 0 0 8px;
+        font-size: 2rem;
+        font-weight: 800;
+        letter-spacing: -0.04em;
+      }
+
+      .login-subtitle {
+        margin: 0 0 28px;
+        color: var(--text-soft);
+        line-height: 1.6;
+      }
+
+      .form-label {
+        color: #e2e8f0;
+        font-weight: 600;
+        margin-bottom: 8px;
+      }
+
+      .form-control {
+        border-radius: 16px;
+        border: 1px solid rgba(255, 255, 255, 0.12);
+        background: rgba(15, 23, 42, 0.42);
+        color: #f8fafc;
+        padding: 0.9rem 1rem;
+        box-shadow: none;
+      }
+
+      .form-control:focus {
+        border-color: rgba(99, 102, 241, 0.8);
+        background: rgba(15, 23, 42, 0.55);
+        color: #fff;
+        box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.16);
+      }
+
+      .form-control::placeholder {
+        color: #94a3b8;
+      }
+
+      .btn-modern {
+        border: 0;
+        border-radius: 16px;
+        padding: 0.95rem 1.1rem;
+        font-weight: 700;
+        transition: transform 0.2s ease, box-shadow 0.2s ease, opacity 0.2s ease;
+      }
+
+      .btn-modern:hover {
+        transform: translateY(-1px);
+        box-shadow: 0 14px 28px rgba(0, 0, 0, 0.18);
+      }
+
+      .btn-login {
+        color: #fff;
+        background: linear-gradient(135deg, var(--primary), var(--primary-2));
+      }
+
+      .btn-login:hover {
+        color: #fff;
+      }
+
+      .help-text {
+        margin-top: 18px;
+        color: var(--text-soft);
+        font-size: 0.9rem;
+        line-height: 1.5;
+      }
+
+      #message {
+        min-height: 24px;
+        font-weight: 600;
+      }
+
+      .field-group {
+        margin-bottom: 18px;
+      }
+
+      @media (max-width: 900px) {
+        .login-wrap {
+          grid-template-columns: 1fr;
+        }
+
+        .hero-panel {
+          min-height: auto;
+        }
+      }
+
+      @media (max-width: 576px) {
+        .page-shell {
+          padding: 14px;
+        }
+
+        .hero-panel,
+        .login-panel {
+          border-radius: 24px;
+        }
+
+        .hero-panel,
+        .login-panel {
+          padding: 24px;
+        }
+
+        .hero-stats {
+          grid-template-columns: 1fr;
+        }
+
+        .login-title {
+          font-size: 1.7rem;
+        }
       }
     </style>
   </head>
   <body>
-    <div class="container" style="max-width: 480px; margin-top: 48px">
-      <div class="card shadow-sm p-4">
-        <h2 class="mb-3">CRM Portal</h2>
-        <form id="loginForm">
-          <div class="mb-3">
-            <label class="form-label">Email</label>
-            <input
-              class="form-control"
-              data-testid="login-email"
-              name="email"
-              value="admin@example.com"
-            />
+    <div class="page-shell">
+      <div class="login-wrap">
+        <section class="hero-panel">
+          <div>
+            <div class="brand-badge">
+              <span class="brand-dot"></span>
+              CRM Portal
+            </div>
+
+            <div class="hero-content">
+              <h1>Welcome back.</h1>
+              <p>
+                Sign in to manage customers, review dashboard activity, and continue your daily workflow
+                in a clean, modern experience.
+              </p>
+            </div>
           </div>
-          <div class="mb-3">
-            <label class="form-label">Password</label>
-            <input
-              class="form-control"
-              data-testid="login-password"
-              name="password"
-              type="password"
-              value="Admin123!"
-            />
+
+          <div class="hero-stats">
+            <div class="stat">
+              <div class="num">24/7</div>
+              <div class="label">Access</div>
+            </div>
+            <div class="stat">
+              <div class="num">Fast</div>
+              <div class="label">Login flow</div>
+            </div>
+            <div class="stat">
+              <div class="num">Secure</div>
+              <div class="label">Session sign-in</div>
+            </div>
           </div>
-          <div class="d-grid">
-            <button class="btn btn-primary" data-testid="login-submit">Sign in</button>
+        </section>
+
+        <section class="login-panel">
+          <div class="login-card">
+            <h2 class="login-title">Sign in</h2>
+            <p class="login-subtitle">Use your CRM account credentials to continue.</p>
+
+            <form id="loginForm">
+              <div class="field-group">
+                <label class="form-label">Email</label>
+                <input
+                  class="form-control"
+                  data-testid="login-email"
+                  name="email"
+                  value="admin@example.com"
+                />
+              </div>
+
+              <div class="field-group">
+                <label class="form-label">Password</label>
+                <input
+                  class="form-control"
+                  data-testid="login-password"
+                  name="password"
+                  type="password"
+                  value="Admin123!"
+                />
+              </div>
+
+              <div class="d-grid">
+                <button class="btn-modern btn-login" data-testid="login-submit">Sign in</button>
+              </div>
+            </form>
+
+            <div id="message" data-testid="login-message" class="text-danger mt-3"></div>
+
+            <div class="help-text">
+              This page keeps the same login flow, test IDs, and form behavior.
+            </div>
           </div>
-        </form>
-        <div id="message" data-testid="login-message" class="text-danger mt-3"></div>
+        </section>
       </div>
     </div>
 
     <script
       src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"
-      integrity=""
       crossorigin="anonymous"
     ></script>
     <script>

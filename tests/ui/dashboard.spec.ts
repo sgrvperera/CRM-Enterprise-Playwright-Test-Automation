@@ -1,4 +1,4 @@
-import { test, expect } from '../fixtures';
+import { test, expect } from '../../src/test-support/fixtures';
 
 test('Dashboard shows customer count', async ({ loggedInPage: page }) => {
   const countText = await page.locator('[data-testid="card-customers"] #count').innerText();

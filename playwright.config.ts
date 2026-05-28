@@ -11,6 +11,9 @@ export default defineConfig({
     baseURL: 'http://localhost:3000',
     trace: 'on-first-retry',
     headless: true,
+    launchOptions:{
+        slowMo: 2000,
+    }
   },
   webServer: {
     command: 'node src/server.js',

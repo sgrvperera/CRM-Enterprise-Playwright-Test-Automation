@@ -1,37 +1,25 @@
 import { test, expect, request } from '@playwright/test';
+import { ApiClient } from '../../src/test-support/services/ApiClient';
+import { CustomerBuilder } from '../../src/test-support/factories/CustomerBuilder';
 
 test('API customers CRUD', async () => {
-  const apiContext = await request.newContext({ baseURL: 'http://localhost:3000' });
-  const login = await apiContext.post('/api/auth/login', {
-    data: { email: 'admin@example.com', password: 'Admin123!' },
-  });
-  const { token } = await login.json();
+  const apiClient = new ApiClient(await request.newContext({ baseURL: 'http://localhost:3000' }));
+  await apiClient.login('admin@example.com', 'Admin123!');
+  const payload = new CustomerBuilder().setName(`API Co ${Date.now()}`).setStatus('Active').build();
 
-  // Create
-  const create = await apiContext.post('/api/customers', {
-    headers: { Authorization: 'Bearer ' + token },
-    data: { name: 'API Co', email: 'api@co.example' },
-  });
+  const create = await apiClient.post('/api/customers', payload);
   expect(create.status()).toBe(201);
   const created = await create.json();
 
-  // Read
-  const list = await apiContext.get('/api/customers', {
-    headers: { Authorization: 'Bearer ' + token },
-  });
-  const all = await list.json();
+  const listResponse = await apiClient.get('/api/customers?q=' + encodeURIComponent(payload.name));
+  const payloadData = await listResponse.json();
+  const all = payloadData.data || [];
   expect(Array.isArray(all)).toBeTruthy();
+  expect(all.some((item: any) => item.id === created.id)).toBeTruthy();
 
-  // Update
-  const update = await apiContext.put('/api/customers/' + created.id, {
-    headers: { Authorization: 'Bearer ' + token },
-    data: { name: 'API Co Ltd' },
-  });
+  const update = await apiClient.put('/api/customers/' + created.id, { name: `${payload.name} Ltd` });
   expect(update.ok()).toBeTruthy();
 
-  // Delete
-  const del = await apiContext.delete('/api/customers/' + created.id, {
-    headers: { Authorization: 'Bearer ' + token },
-  });
+  const del = await apiClient.delete('/api/customers/' + created.id);
   expect(del.status()).toBe(204);
 });

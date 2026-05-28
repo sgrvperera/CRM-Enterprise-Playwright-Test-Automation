@@ -1,55 +1,139 @@
-# CRM/Admin Portal Playwright Framework (Portfolio)
+# CRM/Admin Portal Playwright Framework
 
-This repository contains a professional, enterprise-style Playwright Test framework for a CRM / Admin Portal demo application. It includes a small deterministic local demo server, UI pages, a Playwright test suite (UI + API), configuration for CI, and developer tooling.
+This repository is a professional Playwright automation framework built around a local CRM/Admin portal demo app. It is designed to demonstrate maintainable, production-ready QA automation practices with clear separation between tests and support code, robust role-based coverage, and CI-ready execution.
 
-Features
+## What this repository contains
 
-- Local Express demo server with auth and customers CRUD endpoints
-- UI pages for login, dashboard and customer management with stable data-testid selectors
-- Playwright Test suite (UI and API) organized into smoke/regression-style specs
-- Page object patterns, fixtures, API-driven tests, and cross-layer validations
-- Playwright `webServer` config to start the demo server during tests
+- `src/server.js` — deterministic Express server for the CRM demo backend
+- `src/public/` — static UI pages for login, dashboard, customers, audit, and admin settings
+- `src/test-support/` — reusable automation support files, including page objects, fixtures, API clients, and helpers
+- `tests/api/` — API contract and CRUD validation tests
+- `tests/ui/` — end-to-end UI regression tests
+- `.github/workflows/ci.yml` — GitHub Actions pipeline for linting, type checking, and tests
 
-Quickstart
+## Why this is professional
 
-1. Install dependencies:
+- Clean separation: only spec files live under `tests/`
+- Support code is centralized under `src/test-support/`
+- Page Object Model for browser interactions
+- API client abstraction for service-layer validation
+- Role-based authentication and authorization coverage
+- Contract-aware API validation using schema checks
+- CI integration with Playwright reporting and artifact collection
+
+## Demo application capabilities
+
+The CRM demo app supports:
+
+- user login/logout with token-based authorization
+- dashboard metrics and page navigation
+- customer search, creation, edit, and deletion
+- viewer/admin role separation
+- admin-only audit log and settings pages
+- token validation and session lifecycle handling
+
+## Current repository structure
+
+- `src/`
+  - `server.js` — application server and API layer
+  - `public/` — UI pages and client-side logic
+  - `test-support/` — automation helpers and test utilities
+    - `fixtures.ts` — authenticated Playwright fixtures
+    - `pages/` — reusable page object models
+    - `services/` — API client, auth service, and schemas
+    - `factories/` — test data builder utilities
+    - `data/` — simple test data helpers
+    - `utils/` — validation and logging helpers
+- `tests/`
+  - `api/` — API validation specs
+  - `ui/` — end-to-end UI specs
+- `playwright.config.ts` — Playwright project configuration and web server setup
+- `package.json` — scripts and dependencies
+- `.github/workflows/ci.yml` — CI automation
+
+## Getting started
+
+### 1. Install dependencies
 
 ```bash
 npm install
 npx playwright install
 ```
 
-2. Run tests (UI + API):
+### 2. Run the full suite
 
 ```bash
 npm test
 ```
 
-Project structure
+### 3. Run UI tests only
 
-- `src/` - demo server and static UI pages
-- `tests/ui` - UI end-to-end tests (one business flow per file)
-- `tests/api` - API level tests for auth and CRUD
-- `playwright.config.ts` - Playwright configuration with `webServer` to start the demo app
-- `.env.example` - environment variables template
+```bash
+npm run test:ui
+```
 
-Notes for reviewers
+### 4. Run API tests only
 
-- This project is designed as a portfolio asset showcasing senior QA automation architecture and cross-layer testing patterns. The demo server is intentionally small and deterministic so tests are repeatable.
+```bash
+npm run test:api
+```
 
-Badges & CI
+### 5. Run lint and type-check
 
-- CI: ![CI](https://img.shields.io/badge/ci-pending-lightgrey) (replace with your GitHub Actions CI badge)
-- Playwright HTML report: available as an artifact from CI runs.
+```bash
+npm run lint
+npm run typecheck
+```
 
-Coverage & Quality
+### 6. Format the codebase
 
-- ESLint is configured with stricter rules (see `.eslintrc.json`). Run `npm run lint` to check.
-- TypeScript type-checking is run via `npm run typecheck`.
+```bash
+npm run format
+```
 
-Additional tests
+## Key commands
 
-- Role-based access tests are included under `tests/api/roles.spec.ts` to validate RBAC (viewer vs admin).
-- Data-driven UI tests are included under `tests/ui/data-driven.spec.ts`.
+- `npm test` — run all Playwright specs
+- `npm run test:ui` — run UI-only specs
+- `npm run test:api` — run API-only specs
+- `npm run lint` — validate JavaScript/TypeScript quality
+- `npm run typecheck` — run TypeScript compiler checks
+- `npm run format` — apply Prettier formatting
+
+## Test design principles
+
+- **Single-purpose specs**: each test file focuses on one business flow
+- **Reusable support code**: page objects and fixtures live in `src/test-support/`
+- **Stable selectors**: UI pages use `data-testid` attributes
+- **Role-based coverage**: validates both admin and viewer access boundaries
+- **API + UI validation**: supports cross-layer consistency checks
+- **Data-driven testing**: repeatable scenarios with deterministic payloads
+
+## Supported user personas
+
+- Admin: `admin@example.com` / `Admin123!`
+- Viewer: `viewer@example.com` / `Viewer123!`
+
+## CI pipeline
+
+The GitHub Actions workflow automatically:
+
+- installs dependencies and Playwright browsers
+- runs `npm run lint` and `npm run typecheck`
+- executes the full Playwright suite
+- uploads `playwright-report/` and `test-results/` artifacts
+
+## Maintenance guidance
+
+- Keep page objects in `src/test-support/pages/`
+- Keep shared helpers and services in `src/test-support/`
+- Keep test files under `tests/api/` and `tests/ui/` only
+- Use `data-testid` for selectors, not fragile CSS paths
+- Keep business logic out of spec files
+- Re-run `npm test` after any support refactor
+
+---
+
+> This README is intended to provide a clear, professional overview for contributors and stakeholders, while preserving the current framework implementation and test stability.
 
 
