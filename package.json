@@ -1,0 +1,39 @@
+{
+  "name": "crm-admin-playwright-framework",
+  "version": "1.0.0",
+  "private": true,
+  "description": "CRM / Admin Portal Playwright Test framework - portfolio project",
+  "scripts": {
+    "start": "node src/server.js",
+    "dev": "node src/server.js",
+    "test": "playwright test",
+    "test:ui": "playwright test tests/ui",
+    "test:api": "playwright test tests/api",
+    "lint": "eslint . --ext .ts,.js",
+    "lint:ci": "eslint . --ext .ts,.js || true",
+    "format": "prettier --write .",
+    "typecheck": "tsc --noEmit",
+    "coverage": "echo 'No coverage configured. Add c8/nyc or similar to collect coverage.'"
+  },
+  "keywords": [
+    "playwright",
+    "testing",
+    "crm",
+    "automation",
+    "portfolio"
+  ],
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "body-parser": "^1.20.2",
+    "cors": "^2.8.5",
+    "express": "^4.18.2",
+    "uuid": "^9.0.0"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.36.0",
+    "eslint": "^8.47.0",
+    "prettier": "^2.8.8",
+    "typescript": "^5.2.2"
+  }
+}
