@@ -2,18 +2,23 @@ import { defineConfig, devices } from '@playwright/test';
 
 export default defineConfig({
   testDir: './tests',
-  timeout: 30_000,
-  expect: { timeout: 5000 },
+  timeout: 60_000,
+  expect: { timeout: 5_000 },
   fullyParallel: false,
   retries: 0,
-  reporter: [['list'], ['html', { outputFolder: 'playwright-report' }]],
+  outputDir: 'test-results',
+  reporter: [
+    ['list'],
+    ['html', { outputFolder: 'playwright-report', open: 'never' }],
+    ['junit', { outputFile: 'test-results/junit.xml' }],
+  ],
   use: {
     baseURL: 'http://localhost:3000',
-    trace: 'on-first-retry',
+    trace: 'retain-on-failure',
+    screenshot: 'only-on-failure',
+    video: 'retain-on-failure',
     headless: true,
-    launchOptions:{
-        slowMo: 2000,
-    }
+    viewport: { width: 1280, height: 720 },
   },
   webServer: {
     command: 'node src/server.js',

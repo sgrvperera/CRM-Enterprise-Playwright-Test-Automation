@@ -1,152 +1,167 @@
 # CRM/Admin Portal Playwright Framework
 
-A polished enterprise-style automation portfolio built around a self-contained CRM/Admin demo application.
-This repository demonstrates realistic QA engineering patterns, strong automation architecture, and a modern local web app designed for Playwright validation.
+A polished automation portfolio framework built around a deterministic CRM/Admin demo app.
+This repo is designed to show clients a production-style Playwright setup with strong reporting, professional CI, and reusable test architecture.
 
-## Project overview
+## What this framework does
 
-This project combines a deterministic Express-backed demo CRM app with a scalable Playwright automation framework.
-It showcases:
+This project automates a local CRM/Admin portal with end-to-end UI and API validation.
+The framework covers authentication, role-based access, customer management, audit events, and admin controls while generating debug-ready artifacts for every CI run.
 
-- modern UI design for login, dashboard, customers, audit, and admin settings
-- robust role-based access control for Admin and Viewer personas
-- enterprise test automation patterns with Page Object Model and shared fixtures
-- reusable API client utilities and contract validation
-- CI-ready execution with Playwright reporting and automated server lifecycle
+## Key features
 
-## What changed in this version
+- deterministic local Express demo server
+- browser tests with Playwright and Page Object Model
+- API validation with reusable service client abstractions
+- stable selectors via `data-testid`
+- failure artifacts: screenshots, videos, traces, HTML report
+- CI-friendly reporting and artifact upload
+- built-in credentials for Admin and Viewer personas
 
-- Expanded application UI to support a polished dashboard, customer management workspace, detail pages, audit log, and admin settings.
-- Added customer search, filter, sort, pagination, and bulk delete workflows.
-- Included realistic business states: Prospect, Active, Pending, Inactive, Blocked.
-- Added server endpoints for customer details, bulk delete, and dashboard summary.
-- Strengthened the automation framework with page objects, role fixtures, API services, and reusable data builders.
-- Updated tests to validate happy paths, negative flows, role permissions, and UI/API consistency.
+## Tech stack
 
-## Architecture
+- Node.js 18+
+- Express.js demo backend
+- Playwright Test for browser automation
+- TypeScript for test support and configuration
+- ESLint + Prettier for code quality
 
-- `src/server.js` — local Express demo backend with authentication, authorization, customer data, audit logging, and settings.
-- `src/public/` — static UI pages with modern styling and JS-driven page behavior.
-- `src/public/assets/` — shared CSS and client-side helpers for auth, API fetching, and UI flow.
-- `src/test-support/` — automation support layer for fixtures, page objects, API clients, strategies, and utilities.
-- `tests/ui/` — end-to-end browser tests covering login, dashboard, customer CRUD, role access, and negative scenarios.
-- `tests/api/` — API tests covering authentication, customer lifecycle, role restrictions, and token validation.
-- `.github/workflows/ci.yml` — GitHub Actions pipeline for CI validation.
+## Project structure
 
-## Demo app features
+- `src/server.js` — demo backend, auth, customer API and admin endpoints
+- `src/public/` — static app pages and asset scripts
+- `src/test-support/` — fixtures, page objects, API clients, and helpers
+- `tests/ui/` — browser-driven end-to-end specs
+- `tests/api/` — service-layer API validation specs
+- `.github/workflows/ci.yml` — CI pipeline definition
+- `playwright.config.ts` — Playwright test configuration and artifact settings
 
-- secure login/logout with token-based sessions
-- dashboard with KPI cards, activity feed, and status indicators
-- customer management workspace with search, filter, sort, and pagination
-- create/edit/delete customer flows with inline validation
-- viewer/admin role separation and forbidden access handling
-- audit log events for create/update/delete actions
-- admin settings workflow with persistence and success states
-- unauthorized handling and session lifecycle guard
+## Setup
 
-## Installation
+Install dependencies and Playwright browsers:
 
 ```bash
 npm install
 npx playwright install
 ```
 
-## Running the project
+No additional environment variables are required for the demo app.
 
-Start the demo server locally:
+### Built-in test data
 
-```bash
-npm start
-```
+- Admin user: `admin@example.com` / `Admin123!`
+- Viewer user: `viewer@example.com` / `Viewer123!`
 
-Open the app in the browser:
+## Running tests locally
 
-```bash
-http://localhost:3000
-```
-
-## Running tests
-
-### Full test suite
+Run the full suite:
 
 ```bash
 npm test
 ```
 
-### UI tests only
+Run the browser UI suite only:
 
 ```bash
 npm run test:ui
 ```
 
-### API tests only
+Run the API tests only:
 
 ```bash
 npm run test:api
 ```
 
-### Code quality checks
+Run the CI-friendly suite:
 
 ```bash
-npm run lint
-npm run typecheck
-npm run format
+npm run test:ci
 ```
 
-## Test strategy
+## Running a specific test
 
-- `tests/api/` validates the service layer independently from the UI.
-- `tests/ui/` validates the end-user workflows and permissions in the browser.
-- Shared fixtures and API clients in `src/test-support/` reduce duplication.
-- Stable `data-testid` selectors are used throughout the UI pages.
-- Role-based flows are covered for both Admin and Viewer personas.
-- Negative test coverage includes invalid login, forbidden access, and token tampering.
+Run a single UI spec:
 
-## Key commands
+```bash
+npx playwright test tests/ui/login.spec.ts --project=chromium
+```
+
+Run a specific API file:
+
+```bash
+npx playwright test tests/api/auth.spec.ts
+```
+
+## Reporting and debugging
+
+This project produces:
+
+- HTML report: `playwright-report/`
+- test artifacts: `test-results/`
+- screenshots on failure
+- video recording on failure
+- trace files on failure
+- JUnit XML output at `test-results/junit.xml`
+
+View the HTML report locally:
+
+```bash
+npm run report
+```
+
+## CI/CD
+
+The GitHub Actions workflow:
+
+- checks out the repository
+- installs Node dependencies
+- installs Playwright browser dependencies
+- runs lint and TypeScript validation
+- executes the Playwright test suite
+- uploads `playwright-report` and `test-results` as build artifacts
+
+This makes test failures easy to inspect from the CI run.
+
+## Best practices implemented
+
+- Page Object Model for UI interaction reuse
+- shared authenticated fixtures for browser and API flows
+- deterministic local server for consistent CI runs
+- explicit failure-only artifacts for debugging
+- clear separation of UI and API tests
+- stable selectors with `data-testid`
+- professional CI artifact collection
+
+## Known limitations
+
+- no coverage collection is configured yet
+- the demo app is self-contained and not backed by an external database
+- browser tests currently run against Chromium only
+
+## Future enhancements
+
+- add coverage reporting with `c8` or `nyc`
+- support parallel browser projects across Chrome, Firefox, and WebKit
+- add data-driven test parameterization for more scenarios
+- introduce API contract validation with OpenAPI or JSON schema
+- add page-level visual regression checks
+
+## Commands reference
 
 - `npm install` — install dependencies
 - `npx playwright install` — install browser binaries
 - `npm test` — run all Playwright specs
+- `npm run test:ci` — run CI-friendly suite
 - `npm run test:ui` — run UI-only specs
 - `npm run test:api` — run API-only specs
-- `npm run lint` — lint source files
+- `npm run report` — open the HTML report
+- `npm run lint` — lint files
 - `npm run typecheck` — run TypeScript checks
-- `npm run format` — format the codebase
+- `npm run format` — format the repository
 
 ## Credentials
 
 - Admin: `admin@example.com` / `Admin123!`
 - Viewer: `viewer@example.com` / `Viewer123!`
-
-## CI pipeline
-
-The GitHub Actions workflow performs:
-
-1. checkout repo
-2. install Node dependencies
-3. install Playwright browsers
-4. run lint and typecheck
-5. execute the Playwright suite
-6. upload HTML reports and test artifacts
-
-## Maintenance notes
-
-- Keep automation logic inside `src/test-support/`.
-- Keep test specs under `tests/api/` and `tests/ui/` only.
-- Keep UI selectors stable by using `data-testid` attributes.
-- Keep page objects small and reusable.
-- Avoid business logic inside spec files.
-
-## Why this is portfolio-worthy
-
-- Demonstrates a real QA architecture with separation of concerns.
-- Shows both UI and API validation from a single codebase.
-- Includes enterprise-style workflows, role-based access, and audit validation.
-- Uses modern Playwright patterns with fixtures, page objects, and service wrappers.
-- Designed for deterministic local execution and CI reliability.
-
----
-
-> This README reflects the completed, polished repo state after implementing enterprise-style app and automation improvements.
 
 
