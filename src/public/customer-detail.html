@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Customer Detail</title>
+    <link rel="stylesheet" href="/assets/styles.css" />
+  </head>
+  <body>
+    <div class="page-shell">
+      <div class="layout-grid">
+        <aside class="sidebar page-panel">
+          <div class="brand-identity">
+            <span class="brand-pill"></span>
+            <span>CRM Portal</span>
+          </div>
+          <h2>Navigation</h2>
+          <ul class="nav-list">
+            <li><a class="nav-link" href="/dashboard.html" data-testid="link-dashboard">Dashboard</a></li>
+            <li><a class="nav-link" href="/users.html" data-testid="link-users">Customers</a></li>
+            <li><a class="nav-link" href="/audit.html" data-testid="link-audit">Audit Logs</a></li>
+            <li><a class="nav-link" href="/admin.html" data-testid="link-admin">Admin Settings</a></li>
+          </ul>
+          <div style="margin-top: 24px;">
+            <div class="status-pill" data-testid="current-user">Loading…</div>
+            <button class="btn-modern btn-secondary" style="width:100%; margin-top:18px;" data-testid="logout">Logout</button>
+          </div>
+        </aside>
+
+        <main class="page-panel" style="padding: 28px;">
+          <div class="page-title-row">
+            <div>
+              <h1 class="page-title">Customer details</h1>
+              <p class="page-copy">A consolidated customer record with contact data, lifecycle status, and related service notes.</p>
+            </div>
+            <div class="page-actions">
+              <a class="btn-modern btn-secondary" href="/users.html" data-testid="back-to-customers">Back to customers</a>
+            </div>
+          </div>
+
+          <section class="details-box">
+            <div style="display:grid; gap:18px;">
+              <div>
+                <h2 style="margin:0; font-size:1.25rem;">Company profile</h2>
+                <p class="page-copy">Review the current customer record and confirm status before updating.</p>
+              </div>
+              <div style="display:grid; gap:12px;">
+                <div><strong>Name</strong><div data-testid="customer-name">Loading…</div></div>
+                <div><strong>Email</strong><div data-testid="customer-email">Loading…</div></div>
+                <div><strong>Status</strong><div data-testid="customer-status">Loading…</div></div>
+                <div><strong>Created</strong><div data-testid="customer-created">Loading…</div></div>
+                <div><strong>Notes</strong><p data-testid="customer-notes">Loading customer activity summary…</p></div>
+              </div>
+            </div>
+          </section>
+
+          <div class="form-error" data-testid="customer-error"></div>
+        </main>
+      </div>
+    </div>
+    <script src="/assets/common.js"></script>
+    <script src="/assets/customer-detail.js"></script>
+  </body>
+</html>

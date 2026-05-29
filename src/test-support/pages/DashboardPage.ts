@@ -2,17 +2,35 @@ import { Page } from '@playwright/test';
 
 export class DashboardPage {
   readonly page: Page;
+
   constructor(page: Page) {
     this.page = page;
   }
-  async countCustomers() {
-    const text = await this.page.locator('[data-testid="card-customers"] #count').innerText();
-    return parseInt(text, 10);
+
+  async goto() {
+    await this.page.goto('/dashboard.html');
   }
-  async gotoUsers() {
+
+  async total() {
+    return Number(await this.page.locator('[data-testid="summary-total"]').innerText());
+  }
+
+  async active() {
+    return Number(await this.page.locator('[data-testid="summary-active"]').innerText());
+  }
+
+  async pending() {
+    return Number(await this.page.locator('[data-testid="summary-pending"]').innerText());
+  }
+
+  async activityCount() {
+    return this.page.locator('[data-testid="activity-feed"] article').count();
+  }
+
+  async logout() {
     await Promise.all([
-      this.page.waitForURL('**/users.html'),
-      this.page.click('[data-testid="link-users"]'),
+      this.page.waitForURL('**/'),
+      this.page.click('[data-testid="logout"]'),
     ]);
   }
 }

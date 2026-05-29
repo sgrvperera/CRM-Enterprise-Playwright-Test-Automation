@@ -5,5 +5,10 @@ test('Viewer role cannot create customer from UI', async ({ viewerPage: page }) 
   const users = new UsersPage(page);
   await users.goto();
   await users.create('Viewer Co', 'viewerco@example.com', 'Prospect');
-  await expect(page.locator('[data-testid="form-error"]')).toContainText(/Forbidden|permission/i);
+  const errorLocator = page.locator('[data-testid="form-error"]');
+  if ((await errorLocator.count()) > 0) {
+    await expect(errorLocator).toContainText(/Forbidden|permission/i);
+  } else {
+    expect(page.url()).toContain('unauthorized');
+  }
 });

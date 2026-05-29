@@ -1,139 +1,152 @@
 # CRM/Admin Portal Playwright Framework
 
-This repository is a professional Playwright automation framework built around a local CRM/Admin portal demo app. It is designed to demonstrate maintainable, production-ready QA automation practices with clear separation between tests and support code, robust role-based coverage, and CI-ready execution.
+A polished enterprise-style automation portfolio built around a self-contained CRM/Admin demo application.
+This repository demonstrates realistic QA engineering patterns, strong automation architecture, and a modern local web app designed for Playwright validation.
 
-## What this repository contains
+## Project overview
 
-- `src/server.js` — deterministic Express server for the CRM demo backend
-- `src/public/` — static UI pages for login, dashboard, customers, audit, and admin settings
-- `src/test-support/` — reusable automation support files, including page objects, fixtures, API clients, and helpers
-- `tests/api/` — API contract and CRUD validation tests
-- `tests/ui/` — end-to-end UI regression tests
-- `.github/workflows/ci.yml` — GitHub Actions pipeline for linting, type checking, and tests
+This project combines a deterministic Express-backed demo CRM app with a scalable Playwright automation framework.
+It showcases:
 
-## Why this is professional
+- modern UI design for login, dashboard, customers, audit, and admin settings
+- robust role-based access control for Admin and Viewer personas
+- enterprise test automation patterns with Page Object Model and shared fixtures
+- reusable API client utilities and contract validation
+- CI-ready execution with Playwright reporting and automated server lifecycle
 
-- Clean separation: only spec files live under `tests/`
-- Support code is centralized under `src/test-support/`
-- Page Object Model for browser interactions
-- API client abstraction for service-layer validation
-- Role-based authentication and authorization coverage
-- Contract-aware API validation using schema checks
-- CI integration with Playwright reporting and artifact collection
+## What changed in this version
 
-## Demo application capabilities
+- Expanded application UI to support a polished dashboard, customer management workspace, detail pages, audit log, and admin settings.
+- Added customer search, filter, sort, pagination, and bulk delete workflows.
+- Included realistic business states: Prospect, Active, Pending, Inactive, Blocked.
+- Added server endpoints for customer details, bulk delete, and dashboard summary.
+- Strengthened the automation framework with page objects, role fixtures, API services, and reusable data builders.
+- Updated tests to validate happy paths, negative flows, role permissions, and UI/API consistency.
 
-The CRM demo app supports:
+## Architecture
 
-- user login/logout with token-based authorization
-- dashboard metrics and page navigation
-- customer search, creation, edit, and deletion
-- viewer/admin role separation
-- admin-only audit log and settings pages
-- token validation and session lifecycle handling
+- `src/server.js` — local Express demo backend with authentication, authorization, customer data, audit logging, and settings.
+- `src/public/` — static UI pages with modern styling and JS-driven page behavior.
+- `src/public/assets/` — shared CSS and client-side helpers for auth, API fetching, and UI flow.
+- `src/test-support/` — automation support layer for fixtures, page objects, API clients, strategies, and utilities.
+- `tests/ui/` — end-to-end browser tests covering login, dashboard, customer CRUD, role access, and negative scenarios.
+- `tests/api/` — API tests covering authentication, customer lifecycle, role restrictions, and token validation.
+- `.github/workflows/ci.yml` — GitHub Actions pipeline for CI validation.
 
-## Current repository structure
+## Demo app features
 
-- `src/`
-  - `server.js` — application server and API layer
-  - `public/` — UI pages and client-side logic
-  - `test-support/` — automation helpers and test utilities
-    - `fixtures.ts` — authenticated Playwright fixtures
-    - `pages/` — reusable page object models
-    - `services/` — API client, auth service, and schemas
-    - `factories/` — test data builder utilities
-    - `data/` — simple test data helpers
-    - `utils/` — validation and logging helpers
-- `tests/`
-  - `api/` — API validation specs
-  - `ui/` — end-to-end UI specs
-- `playwright.config.ts` — Playwright project configuration and web server setup
-- `package.json` — scripts and dependencies
-- `.github/workflows/ci.yml` — CI automation
+- secure login/logout with token-based sessions
+- dashboard with KPI cards, activity feed, and status indicators
+- customer management workspace with search, filter, sort, and pagination
+- create/edit/delete customer flows with inline validation
+- viewer/admin role separation and forbidden access handling
+- audit log events for create/update/delete actions
+- admin settings workflow with persistence and success states
+- unauthorized handling and session lifecycle guard
 
-## Getting started
-
-### 1. Install dependencies
+## Installation
 
 ```bash
 npm install
 npx playwright install
 ```
 
-### 2. Run the full suite
+## Running the project
+
+Start the demo server locally:
+
+```bash
+npm start
+```
+
+Open the app in the browser:
+
+```bash
+http://localhost:3000
+```
+
+## Running tests
+
+### Full test suite
 
 ```bash
 npm test
 ```
 
-### 3. Run UI tests only
+### UI tests only
 
 ```bash
 npm run test:ui
 ```
 
-### 4. Run API tests only
+### API tests only
 
 ```bash
 npm run test:api
 ```
 
-### 5. Run lint and type-check
+### Code quality checks
 
 ```bash
 npm run lint
 npm run typecheck
-```
-
-### 6. Format the codebase
-
-```bash
 npm run format
 ```
 
+## Test strategy
+
+- `tests/api/` validates the service layer independently from the UI.
+- `tests/ui/` validates the end-user workflows and permissions in the browser.
+- Shared fixtures and API clients in `src/test-support/` reduce duplication.
+- Stable `data-testid` selectors are used throughout the UI pages.
+- Role-based flows are covered for both Admin and Viewer personas.
+- Negative test coverage includes invalid login, forbidden access, and token tampering.
+
 ## Key commands
 
+- `npm install` — install dependencies
+- `npx playwright install` — install browser binaries
 - `npm test` — run all Playwright specs
 - `npm run test:ui` — run UI-only specs
 - `npm run test:api` — run API-only specs
-- `npm run lint` — validate JavaScript/TypeScript quality
-- `npm run typecheck` — run TypeScript compiler checks
-- `npm run format` — apply Prettier formatting
+- `npm run lint` — lint source files
+- `npm run typecheck` — run TypeScript checks
+- `npm run format` — format the codebase
 
-## Test design principles
-
-- **Single-purpose specs**: each test file focuses on one business flow
-- **Reusable support code**: page objects and fixtures live in `src/test-support/`
-- **Stable selectors**: UI pages use `data-testid` attributes
-- **Role-based coverage**: validates both admin and viewer access boundaries
-- **API + UI validation**: supports cross-layer consistency checks
-- **Data-driven testing**: repeatable scenarios with deterministic payloads
-
-## Supported user personas
+## Credentials
 
 - Admin: `admin@example.com` / `Admin123!`
 - Viewer: `viewer@example.com` / `Viewer123!`
 
 ## CI pipeline
 
-The GitHub Actions workflow automatically:
+The GitHub Actions workflow performs:
 
-- installs dependencies and Playwright browsers
-- runs `npm run lint` and `npm run typecheck`
-- executes the full Playwright suite
-- uploads `playwright-report/` and `test-results/` artifacts
+1. checkout repo
+2. install Node dependencies
+3. install Playwright browsers
+4. run lint and typecheck
+5. execute the Playwright suite
+6. upload HTML reports and test artifacts
 
-## Maintenance guidance
+## Maintenance notes
 
-- Keep page objects in `src/test-support/pages/`
-- Keep shared helpers and services in `src/test-support/`
-- Keep test files under `tests/api/` and `tests/ui/` only
-- Use `data-testid` for selectors, not fragile CSS paths
-- Keep business logic out of spec files
-- Re-run `npm test` after any support refactor
+- Keep automation logic inside `src/test-support/`.
+- Keep test specs under `tests/api/` and `tests/ui/` only.
+- Keep UI selectors stable by using `data-testid` attributes.
+- Keep page objects small and reusable.
+- Avoid business logic inside spec files.
+
+## Why this is portfolio-worthy
+
+- Demonstrates a real QA architecture with separation of concerns.
+- Shows both UI and API validation from a single codebase.
+- Includes enterprise-style workflows, role-based access, and audit validation.
+- Uses modern Playwright patterns with fixtures, page objects, and service wrappers.
+- Designed for deterministic local execution and CI reliability.
 
 ---
 
-> This README is intended to provide a clear, professional overview for contributors and stakeholders, while preserving the current framework implementation and test stability.
+> This README reflects the completed, polished repo state after implementing enterprise-style app and automation improvements.
 
 

@@ -6,6 +6,6 @@ test.describe('Auth flow', () => {
     const login = new LoginPage(page);
     await login.goto();
     await login.login('admin@example.com', 'Admin123!');
-    await expect(page.locator('[data-testid="card-customers"]')).toContainText('Customers');
+    await expect(page.locator('[data-testid="card-customers"]')).toContainText('Total customers');
   });
 });

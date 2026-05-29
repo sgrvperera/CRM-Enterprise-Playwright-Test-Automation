@@ -167,6 +167,33 @@ app.get('/api/customers', authenticate, (req, res) => {
   res.json({ meta: { total: results.length, page, pageSize }, data: paged });
 });
 
+app.get('/api/customers/:id', authenticate, (req, res) => {
+  const { id } = req.params;
+  const customer = customers.find((c) => c.id === id);
+  if (!customer) return res.status(404).json({ error: 'Not found' });
+  res.json(customer);
+});
+
+app.post('/api/customers/bulk-delete', authenticate, requireAdmin, (req, res) => {
+  const ids = Array.isArray(req.body.ids) ? req.body.ids : [];
+  if (!ids.length) return res.status(400).json({ error: 'No ids provided' });
+  const before = customers.length;
+  customers = customers.filter((c) => !ids.includes(c.id));
+  const removed = before - customers.length;
+  logAudit(req.user, 'customer_bulk_delete', `Removed ${removed} customers`);
+  res.json({ removed });
+});
+
+app.get('/api/summary', authenticate, (req, res) => {
+  const total = customers.length;
+  const statusCounts = customers.reduce((acc, c) => {
+    acc[c.status] = (acc[c.status] || 0) + 1;
+    return acc;
+  }, {});
+  const recentAudit = auditLogs.slice(0, 10);
+  res.json({ total, statusCounts, recentAudit });
+});
+
 app.post('/api/customers', authenticate, requireAdmin, (req, res) => {
   const { name, email, status } = req.body || {};
   if (!name || !email) return res.status(400).json({ error: 'Validation failed' });

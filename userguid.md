@@ -1,26 +1,31 @@
-# User Guide: CRM/Admin Portal Playwright Framework
+# User Guide — CRM/Admin Portal Playwright Framework
 
-This user guide explains how to use the current framework from initial setup through execution, debugging, and extension. It is written for QA engineers, automation developers, and technical reviewers.
+This guide is intended for QA engineers, automation developers, and reviewers who need to use, maintain, or extend the finished framework.
 
-## 1. What this project is
+## 1. Purpose of the project
 
-A Playwright automation framework built around a local CRM/Admin demo app. The framework is designed to be:
+This repository combines a polished demo CRM/Admin web application with a production-like Playwright automation framework.
+It is designed to demonstrate:
 
-- maintainable
-- easy to extend
-- separated between test specs and support logic
-- role-aware for Admin and Viewer workflows
-- ready for CI and reporting
+- realistic enterprise workflows
+- deterministic local execution
+- consistent role-based access testing
+- reusable automation architecture with page objects, service clients, and fixtures
+- clear separation of UI and API validation
 
 ## 2. Prerequisites
 
-Before using the repository, install:
+Required:
 
 - Node.js 18 or newer
-- npm (installed with Node.js)
-- Git (optional but recommended)
+- npm
 
-## 3. Install dependencies
+Optional but helpful:
+
+- Git
+- VS Code or similar editor
+
+## 3. Setup
 
 From the project root run:
 
@@ -29,191 +34,182 @@ npm install
 npx playwright install
 ```
 
-This installs project dependencies and the required Playwright browser binaries.
+This installs dependencies and Playwright browser binaries.
 
-## 4. Core repository structure
+## 4. Application structure
 
-The repository is organized to keep tests clean and support code reusable.
+### Core paths
 
-### Root folders
+- `src/server.js` — local Express server, authentication, customer API, audit logging, and settings.
+- `src/public/` — UI pages for login, dashboard, customers, audit, admin, and customer detail.
+- `src/public/assets/` — shared CSS and client-side JS used by the pages.
+- `src/test-support/` — reusable automation helpers.
+- `tests/api/` — API-focused validation specs.
+- `tests/ui/` — browser-based end-to-end specs.
 
-- `src/` — demo application and support utilities
-- `tests/` — only the Playwright test specs
-- `.github/workflows/` — CI definitions
-- `playwright.config.ts` — Playwright runtime configuration
+### Test-support structure
 
-### Key folders inside `src/`
+- `fixtures.ts` — authenticated role fixtures and page/session helpers.
+- `pages/` — page objects for login, dashboard, and customer management.
+- `services/` — API client, auth strategy, and JSON schema helpers.
+- `factories/` — data builder utilities for customer payloads.
+- `utils/` — logging and schema validation.
 
-- `src/server.js` — Express-based CRM demo server and API implementation
-- `src/public/` — static HTML pages and client-side logic used by the demo app
-- `src/test-support/` — shared automation helpers
-  - `pages/` — page objects for UI interaction logic
-  - `fixtures.ts` — authenticated fixtures and browser session setup
-  - `services/` — API client, auth service, schema definitions, and validation
-  - `factories/` — reusable test data builders
-  - `data/` — simple helper data utilities
-  - `utils/` — logging and schema validation helpers
+## 5. Running the demo app
 
-### Key folders inside `tests/`
+You can run the demo app manually:
 
-- `tests/api/` — API validation and contract tests
-- `tests/ui/` — UI end-to-end regression tests
+```bash
+npm start
+```
 
-## 5. How the demo app works
+Then browse:
 
-The demo app is a deterministic CRM/admin portal with:
+```bash
+http://localhost:3000
+```
 
-- login and logout
-- dashboard with live customer metrics
-- customer management pages
-- search and filter support
-- admin-only audit and settings pages
-- role-based access restrictions
-- token-based authentication
+The app includes:
 
-The test suite uses the local server created by `src/server.js` and exercises the app through browser automation and API calls.
+- polished login experience
+- dashboard KPI summary
+- customer management with search, filter, sort, and pagination
+- customer detail pages
+- admin settings and audit log pages
+- role-based access enforcement
 
 ## 6. Running tests
 
-### Run the full suite
+### Full test suite
 
 ```bash
 npm test
 ```
 
-### Run only UI tests
+### UI tests only
 
 ```bash
 npm run test:ui
 ```
 
-### Run only API tests
+### API tests only
 
 ```bash
 npm run test:api
 ```
 
-### Run lint and type-check only
+### Lint and type-check
 
 ```bash
 npm run lint
 npm run typecheck
 ```
 
-### Format the code
+### Format the repository
 
 ```bash
 npm run format
 ```
 
-## 7. How the Playwright configuration works
+## 7. How the test framework works
 
-The `playwright.config.ts` file starts the local server automatically during tests using the `webServer` setting. This means:
+The framework runs against the local demo server defined in `src/server.js`.
+Playwright starts the server automatically via `playwright.config.ts`.
+This keeps CI and local executions consistent.
 
-- you do not need to start the app manually for CI or local test execution
-- the demo app is available at `http://localhost:3000`
-- tests run against the prepared browser context and stable selector conventions
+Key design points:
 
-## 8. Authentication and roles
+- `data-testid` attributes are used for stable selectors.
+- Page objects encapsulate UI flows.
+- Shared fixtures provide authenticated API and browser contexts.
+- API tests are isolated from browser state.
+- UI tests verify end-to-end navigation and interactions.
 
-The framework supports two personas:
+## 8. Personas and credentials
 
-- **Admin** — `admin@example.com` / `Admin123!`
-- **Viewer** — `viewer@example.com` / `Viewer123!`
+The project defines two personas:
 
-The `src/test-support/fixtures.ts` file creates authenticated sessions by logging in through the API and storing the issued token in browser `localStorage`.
+- Admin: `admin@example.com` / `Admin123!`
+- Viewer: `viewer@example.com` / `Viewer123!`
 
-Admin and Viewer flows are separated so you can validate both success and forbidden / unauthorized behavior.
+Admin users can manage customers, view audit logs, and update admin settings.
+Viewer users can browse data but are blocked from admin actions.
 
-## 9. How to run a single spec
+## 9. Common commands
 
-To run one UI spec, use:
+Run a single spec:
 
 ```bash
 npx playwright test tests/ui/dashboard.spec.ts --project=chromium
 ```
 
-To run one API spec, use:
+Run one API file:
 
 ```bash
 npx playwright test tests/api/auth.spec.ts --project=chromium
 ```
 
-## 10. Adding a new UI test
-
-1. Add missing UI interaction methods to a page object in `src/test-support/pages/`
-2. Create a new spec file under `tests/ui/`
-3. Import `test` and `expect` from `../../src/test-support/fixtures` when you need authenticated sessions
-4. Use `data-testid` selectors in the page object and spec
-5. Keep the spec focused on a single business outcome
-6. Run the spec locally and confirm it passes
-
-## 11. Adding a new API test
-
-1. Add or reuse an API client method inside `src/test-support/services/ApiClient.ts`
-2. If you need authenticated sessions, use `AuthService` from `src/test-support/services/AuthService.ts`
-3. Create a new spec under `tests/api/`
-4. Assert status codes and response payloads consistently
-
-## 12. Extending fixtures and support logic
-
-The `src/test-support/fixtures.ts` file currently defines:
-
-- `adminApi` — authenticated API client for Admin user
-- `viewerApi` — authenticated API client for Viewer user
-- `adminPage` — browser page with admin session loaded
-- `viewerPage` — browser page with viewer session loaded
-- `loggedInPage` — generic logged-in browser page for reusable UI flows
-
-To add new test support:
-
-- add new page objects in `src/test-support/pages/`
-- add shared helpers in `src/test-support/utils/`
-- add service helpers in `src/test-support/services/`
-- keep test-specific logic inside the `tests/` folder only
-
-## 13. How to read reports
-
-After test execution, the HTML report is generated in `playwright-report/`.
-
-Open it with:
+Open the last HTML report:
 
 ```bash
 npx playwright show-report
 ```
 
-## 14. Troubleshooting
+## 10. Writing new tests
 
-- If a test cannot find an element, verify the `data-testid` attribute exists in `src/public/`
-- If authentication fails, verify the login credentials and that the web server started automatically
-- If formatting issues appear, run `npm run format`
-- If TypeScript errors appear, run `npm run typecheck`
+### UI tests
 
-## 15. Best practices
+1. Add page object methods in `src/test-support/pages/`.
+2. Create a test file under `tests/ui/`.
+3. Use fixtures from `src/test-support/fixtures.ts`.
+4. Prefer `data-testid` selectors.
+5. Keep each spec focused on a single workflow.
 
-- Favor page objects over inline page automation in specs
-- Keep support utilities in `src/test-support/`
-- Keep specs under `tests/` only
-- Use small, readable tests instead of large monolithic flows
-- Validate both happy paths and forbidden / error paths
+### API tests
 
-## 16. Recommended workflow
+1. Reuse `ApiClient` in `src/test-support/services/ApiClient.ts`.
+2. Authenticate via `AuthService` when needed.
+3. Assert response status codes and payload shapes.
+4. Keep API tests deterministic.
 
-1. install packages: `npm install`
-2. install browsers: `npx playwright install`
-3. run full validation: `npm test`
-4. add or update tests and page objects
-5. run targeted specs locally
-6. run lint and typecheck
-7. commit and push
+## 11. Extending the framework
 
-## 17. Notes for maintainers
+When adding new automation capabilities:
 
-- Keep the framework deterministic by relying on the local demo server
-- Avoid hard-coded selectors outside page objects
-- Keep API schemas aligned with server payloads
-- Keep CI and local behavior consistent through the `playwright.config.ts` web server
+- add reusable helpers in `src/test-support/utils/`
+- add data builders in `src/test-support/factories/`
+- keep test logic in `tests/` files only
+- add or update `data-testid` attributes for stable selectors
+- update documentation and guides alongside code changes
+
+## 12. Troubleshooting
+
+- If a selector fails, verify the page includes the `data-testid` attribute.
+- If a login flow stops working, verify the correct credentials are used.
+- If tests fail in CI but pass locally, ensure the server starts correctly and the browser binaries are installed.
+- If TypeScript issues arise, run:
+
+```bash
+npm run typecheck
+```
+
+## 13. Best practices
+
+- Reuse page objects and fixtures rather than duplicating selectors.
+- Keep automation suites small and focused.
+- Validate both success and failure scenarios.
+- Maintain separation between UI flows and backend checks.
+
+## 14. Notes for reviewers
+
+The completed repo now demonstrates:
+
+- a modern CRM/admin web app with enterprise-style workflows
+- a scalable Playwright automation architecture
+- strong role-based access coverage
+- deterministic data flows for robust testing
+- polished documentation for contributors
 
 ---
 
-This user guide is written to make the current framework easy to understand and use, even for developers who are new to this codebase.
+This user guide is designed to make onboarding and maintenance straightforward while preserving the finished project state.
