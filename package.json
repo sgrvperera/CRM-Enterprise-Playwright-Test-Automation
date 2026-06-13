@@ -33,7 +33,8 @@
     "uuid": "^9.0.0"
   },
   "devDependencies": {
-    "@playwright/test": "^1.36.0",
+    "@playwright/test": "^1.60.0",
+    "@types/node": "^25.9.3",
     "eslint": "^8.47.0",
     "prettier": "^2.8.8",
     "typescript": "^5.2.2"
